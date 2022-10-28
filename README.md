@@ -1,5 +1,5 @@
 # firework
-A programm animating a firework.
+A program animating a firework.
 
 ![alt text](https://github.com/AndreasMuehlmann/firework/blob/main/pictures/example.png)
 
@@ -11,7 +11,7 @@ GitHub repository: "https://github.com/AndreasMuehlmann/firework"
 Clone the git repository with
 "git clone https://github.com/AndreasMuehlmann/firework.git".
 
-if git is not installed download the
+If git is not installed download the
 repository from the website via the zip-archive (click on the green button).
 
 ## Usage
