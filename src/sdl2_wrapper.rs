@@ -10,7 +10,8 @@ use sdl2::EventPump;
 
 pub struct SDL2Wrapper {
     canvas: Canvas<Window>,
-    event_pump: EventPump
+    background_color: Color,
+    event_pump: EventPump,
 }
 
 impl SDL2Wrapper {
@@ -18,9 +19,9 @@ impl SDL2Wrapper {
         let sdl_context = sdl2::init().unwrap();
         let video_subsystem = sdl_context.video().unwrap();
 
-        let mut window_builder = WindowBuilder::new(&video_subsystem, "fireword", 1600, 1200);
+        let mut window_builder = WindowBuilder::new(&video_subsystem, "firework", 1600, 1200);
         window_builder.position_centered();
-        window_builder.maximized();
+        window_builder.fullscreen_desktop();
         window_builder.opengl();
         window_builder.resizable();
 
@@ -32,19 +33,24 @@ impl SDL2Wrapper {
         canvas.present();
 
         let event_pump = sdl_context.event_pump().unwrap();
+
+        let background_color = Color::RGB(0, 0, 0);
         
         return Self {
             canvas,
+            background_color, 
             event_pump,
         }
     }
 
-    pub fn set_draw_color(&mut self, color: Color) {
+    pub fn fill_rect_with_color(&mut self, x_pos: i32, y_pos: i32, x_size: u32, y_size: u32, color: Color) {
         self.canvas.set_draw_color(color);
+        self.canvas.fill_rect(Rect::new(x_pos, y_pos, x_size, y_size)).unwrap();
     }
 
-    pub fn fill_rect(&mut self, x_pos: i32, y_pos: i32, x_size: u32, y_size: u32) {
-        self.canvas.fill_rect(Rect::new(x_pos, y_pos, x_size, y_size)).unwrap();
+    pub fn clear(&mut self) {
+        self.canvas.set_draw_color(self.background_color);
+        self.canvas.clear();
     }
 
     pub fn present(&mut self) {
