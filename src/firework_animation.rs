@@ -110,7 +110,7 @@ impl FireworkAnimation {
     fn create_rocket(&self, pos_bounds: [f32; 4]) -> Rocket {
         let mut rng = thread_rng();
         return Rocket::new(
-            [8, 18],
+            [5, 12],
             [pos_bounds[0] + rng.gen::<f64>() as f32 * (pos_bounds[1] - pos_bounds[0]), pos_bounds[3]],
             [(rng.gen::<f64>() - 0.5) as f32 * 2.0, (-rng.gen::<f64>() * 50.0) as f32],
             [((rng.gen::<f64>() - 0.5) * 1.0) as f32, (-0.5 - rng.gen::<f64>() * 2.0) as f32],
