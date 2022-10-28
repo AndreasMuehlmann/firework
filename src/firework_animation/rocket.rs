@@ -4,8 +4,6 @@ use sdl2::pixels::Color;
 
 pub struct Rocket {
     pub size: [u32; 2],
-    pub angle: f32,
-    pub angular_vel: f32,
     pub pos: [f32; 2],     
     pub vel: [f32; 2],
     pub acc: [f32; 2],
@@ -15,11 +13,9 @@ pub struct Rocket {
 
 
 impl Rocket {
-    pub fn new(size: [u32; 2], angle: f32, angular_vel: f32, pos: [f32; 2], vel: [f32; 2], acc: [f32; 2], color: Color, ticks_to_explosion: u32) -> Self {
+    pub fn new(size: [u32; 2], pos: [f32; 2], vel: [f32; 2], acc: [f32; 2], color: Color, ticks_to_explosion: u32) -> Self {
         return Self {
             size,
-            angle, 
-            angular_vel,
             pos,
             vel,
             acc,
@@ -36,6 +32,10 @@ impl Rocket {
     }
 
     pub fn substract_tick(&mut self) {
+        if self.ticks_to_explosion < 1 {
+            self.ticks_to_explosion = 0;
+            return;
+        }
         self.ticks_to_explosion -= 1;
     }
 }

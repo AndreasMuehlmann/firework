@@ -8,9 +8,9 @@ mod sdl2_wrapper;
 use sdl2_wrapper::SDL2Wrapper;
 
 
-const TICKS_PER_SECOND: u32 = 100;
+const TICKS_PER_SECOND: u32 = 50;
 const NANO_SECS_BETWEEN_TICKS: f32 = (10_u32.pow(9) / TICKS_PER_SECOND) as f32;
-const FRAMES_PER_SECOND: f32 = 144.0;
+const FRAMES_PER_SECOND: f32 = 60.0;
 const NANO_SECS_BETWEEN_FRAMES: f32 = 10_u32.pow(9) as f32 / FRAMES_PER_SECOND;
 const MAX_FRAMESKIP: u32 = TICKS_PER_SECOND;
 const VALUE_DIVIDING_SLEEP_TIME: f32 = 10.0;

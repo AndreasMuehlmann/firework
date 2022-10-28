@@ -21,7 +21,7 @@ impl SDL2Wrapper {
 
         let mut window_builder = WindowBuilder::new(&video_subsystem, "firework", 1600, 1200);
         window_builder.position_centered();
-        window_builder.fullscreen_desktop();
+        window_builder.maximized();
         window_builder.opengl();
         window_builder.resizable();
 
