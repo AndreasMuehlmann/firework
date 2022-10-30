@@ -8,6 +8,7 @@ use sdl2::pixels::Color;
 
 use crate::SDL2Wrapper;
 
+
 mod rocket;
 use rocket::Rocket;
 
@@ -62,7 +63,7 @@ impl FireworkAnimation {
             index += 0;
         }
         for to_explode_index in to_explode {
-            self.explosion(to_explode_index);
+            self.explosion(self.rockets[to_explode_index].pos, 100, self.rockets[to_explode_index].color);
             self.rockets.remove(to_explode_index);
         }
 
@@ -80,6 +81,7 @@ impl FireworkAnimation {
             self.particles.remove(to_disolve_index);
         }
 
+        let mut should_write_sarah: bool = false;
         for event in self.sdl2_wrapper.get_events() {
             match event {
                 Event::Quit {..} |
@@ -102,8 +104,15 @@ impl FireworkAnimation {
                         }
                     },
 
+                    Event::KeyDown { keycode: Some(Keycode::S), .. } => {
+                        should_write_sarah = true;
+                    },
+
                 _ => {}
             }
+        }
+        if should_write_sarah {
+            self.write_sarah();
         }
     }
 
@@ -123,24 +132,71 @@ impl FireworkAnimation {
         return bounds[0] <= pos[0] && pos[0] <= bounds[1]
             && bounds[2] <= pos[1] && pos[1] <= bounds[3];
     }
+
+    fn write_sarah(&mut self) {
+        let x_scale = 0.5;
+        let y_scale = 0.5;
+        let min_scale = if x_scale < y_scale { x_scale } else { y_scale };
+        // S
+        self.explosion_rectangle([100.0 * x_scale, 200.0 * y_scale], [400.0 * x_scale, 250.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([100.0 * x_scale, 250.0 * y_scale], [150.0 * x_scale, 550.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([100.0 * x_scale, 550.0 * y_scale], [400.0 * x_scale, 600.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([400.0 * x_scale, 600.0 * y_scale], [450.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([100.0 * x_scale, 900.0 * y_scale], [400.0 * x_scale, 950.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+
+        // a
+        self.explosion_rectangle([500.0 * x_scale, 550.0 * y_scale], [900.0 * x_scale, 600.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([500.0 * x_scale, 600.0 * y_scale], [550.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([900.0 * x_scale, 600.0 * y_scale], [950.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([500.0 * x_scale, 900.0 * y_scale], [900.0 * x_scale, 950.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+
+        // r
+        self.explosion_rectangle([1000.0 * x_scale, 600.0 * y_scale], [1050.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([1000.0 * x_scale, 550.0 * y_scale], [1400.0 * x_scale, 600.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+
+        // a
+        self.explosion_rectangle([1500.0 * x_scale, 550.0 * y_scale], [1900.0 * x_scale, 600.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([1500.0 * x_scale, 600.0 * y_scale], [1550.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([1900.0 * x_scale, 600.0 * y_scale], [1950.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([1500.0 * x_scale, 900.0 * y_scale], [1900.0 * x_scale, 950.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+
+        // h
+        self.explosion_rectangle([2000.0 * x_scale, 200.0 * y_scale], [2050.0 * x_scale, 550.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([2000.0 * x_scale, 550.0 * y_scale], [2050.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([2400.0 * x_scale, 550.0 * y_scale], [2450.0 * x_scale, 900.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+        self.explosion_rectangle([2000.0 * x_scale, 550.0 * y_scale], [2400.0 * x_scale, 600.0 * y_scale], 50.0 * min_scale, Color::RGB(125, 0, 0));
+    }
+
     
-    fn explosion(&mut self, rocket_index: usize) {
+    fn explosion_rectangle(&mut self, pos1: [f32; 2], pos2: [f32; 2], step_size: f32, color: Color) {
+        let min_x = if pos1[0] < pos2[0] { pos1[0] } else { pos2[0] };
+        let min_y = if pos1[1] < pos2[1] { pos1[1] } else { pos2[1] };
+        for delta_x in 0..((pos2[0] - pos1[0]).abs() / step_size) as i32 {
+            for delta_y in 0..((pos2[1] - pos1[1]).abs() / step_size) as i32 {
+                let explosion_pos: [f32; 2] = [
+                    min_x + delta_x as f32 * step_size,
+                    min_y + delta_y as f32 * step_size,
+                ];
+                self.explosion(explosion_pos, 5, color);
+            }
+        }
+    }
+    
+    fn explosion(&mut self, pos: [f32; 2], particle_count: u32, color: Color) {
         let mut rng = thread_rng();
-        let explosion_pos = self.rockets[rocket_index].pos;
-        let explosion_color = self.rockets[rocket_index].color;
-        for _ in 0..100 {
+        for _ in 0..particle_count {
             self.particles.push(Particle::new(
                     [2, 2],
-                    explosion_pos,
+                    pos,
                     [((rng.gen::<f64>() - 0.5) * 20.0*rng.gen::<f64>()) as f32, ((rng.gen::<f64>() - 0.5) * 15.0*rng.gen::<f64>()) as f32],
                     [0.0, 0.0],
-                    explosion_color,
+                    color,
                     100
                     )
                 );
         }
     }
-
+    
     pub fn display(&mut self) {
         self.sdl2_wrapper.clear();
         for rocket in &self.rockets {
